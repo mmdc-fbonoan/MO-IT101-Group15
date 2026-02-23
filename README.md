@@ -7,7 +7,6 @@ MMDC Milestone 2
 * Gradle
 * JUnit 5
 * Spotless (Palantir formatter)
-* GitHub Actions (CI)
 
 ---
 ## 📁 Project Structure
