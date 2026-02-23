@@ -1,0 +1,11 @@
+# Auto detect text files and normalize line endings to LF
+* text=auto
+
+# Shell scripts - always LF
+*.sh eol=lf
+gradlew eol=lf
+gradlew.bat eol=crlf
+
+# Windows-specific
+*.bat eol=crlf
+*.cmd eol=crlf

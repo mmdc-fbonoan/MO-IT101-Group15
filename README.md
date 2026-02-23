@@ -46,7 +46,7 @@ gradlew.bat build
 ```
 Run the generated JAR:
 ```bash
-java -jar build/libs/javaTemplate.jar
+java -jar build/libs/MO-IT101-Group15-0.0.0.jar
 ```
 ---
 ## ▶ Run Application
