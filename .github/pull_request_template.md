@@ -9,7 +9,7 @@
 
 ## ✅ Pre-submission Checklist
 
-- [ ] I have searched existing issues to make sure this feature was not already requested
+- [ ] I have searched existing issues/feature to make sure this feature was not already requested
 - [ ] The project is running on JDK 25 (`java -version` confirms version 25)
 - [ ] I have run the formatter (e.g. `./gradlew spotlessCheck`)
 - [ ] The project builds successfully (`./gradlew build`)
