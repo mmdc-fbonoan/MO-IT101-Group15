@@ -14,6 +14,7 @@ public class UserInterface {
 
     private void forceExit() {
         app.changePayrollStaffMenu(false);
+        app.changeEmployeeMenu(false);
         app.changeApp(false);
     }
 
@@ -29,13 +30,9 @@ public class UserInterface {
     private void displayPayrollStaffMenu() {
         while (app.isPayrollStaffMenu()) {
             System.out.println("\nChoose an option:");
-            System.out.println("a. Compute payroll (all employees)");
-            System.out.println("b. Compute payroll (employee)");
-            System.out.println("c. View Details (all employees)");
-            System.out.println("d. View Details (employee)");
-            System.out.println("e. Import employee records");
-            System.out.println("q. Go back");
-            System.out.println(":q. Exit");
+            System.out.println("a. Process Payroll");
+            System.out.println(":q. Logout");
+            System.out.println(":wq. Exit the program");
             System.out.println("Choice: ");
 
             String optionInput = scanner.nextLine();
@@ -43,40 +40,15 @@ public class UserInterface {
             switch (optionInput) {
                 case "a":
                     clearScreen();
-                    System.out.println("Compute payroll (all employees)");
+                    System.out.println("Processing payroll...");
                     displayHeader();
-                    break;
-
-                case "b":
-                    clearScreen();
-                    System.out.println("Compute payroll (employee)");
-                    displayHeader();
-                    break;
-
-                case "c":
-                    clearScreen();
-                    System.out.println("View Details (all employees)");
-                    displayHeader();
-                    break;
-
-                case "d":
-                    clearScreen();
-                    System.out.println("View Details (employee)");
-                    displayHeader();
-                    break;
-                case "e":
-                    clearScreen();
-                    System.out.println("Import employee records");
-                    displayHeader();
-                    break;
-                case "q":
-                    clearScreen();
-                    // go back
-                    app.changePayrollStaffMenu(false);
                     break;
                 case ":q":
                     clearScreen();
-                    // exit program
+                    app.setUserRole("");
+                    app.changePayrollStaffMenu(false);
+                    break;
+                case ":wq":
                     forceExit();
                     break;
                 default:
@@ -89,12 +61,9 @@ public class UserInterface {
     private void displayEmployeeMenu() {
         while (app.isEmployeeMenu()) {
             System.out.println("\nChoose an option:");
-            System.out.println("a. Compute payroll (all employees)");
-            System.out.println("b. Compute payroll (employee)");
-            System.out.println("c. View Details (all employees)");
-            System.out.println("d. View Details (employee)");
-            System.out.println("q. Go back");
-            System.out.println(":q. Exit");
+            System.out.println("a. Enter your employee number");
+            System.out.println(":q. Logout");
+            System.out.println(":wq. Exit the program");
             System.out.println("Choice: ");
 
             String optionInput = scanner.nextLine();
@@ -102,35 +71,15 @@ public class UserInterface {
             switch (optionInput) {
                 case "a":
                     clearScreen();
-                    System.out.println("Compute payroll (all employees)");
+                    System.out.println("Enter your employee number");
                     displayHeader();
-                    break;
-
-                case "b":
-                    clearScreen();
-                    System.out.println("Compute payroll (employee)");
-                    displayHeader();
-                    break;
-
-                case "c":
-                    clearScreen();
-                    System.out.println("View Details (all employees)");
-                    displayHeader();
-                    break;
-
-                case "d":
-                    clearScreen();
-                    System.out.println("View Details (employee)");
-                    displayHeader();
-                    break;
-                case "q":
-                    clearScreen();
-                    // go back
-                    app.changeEmployeeMenu(false);
                     break;
                 case ":q":
                     clearScreen();
-                    // exit program
+                    app.setUserRole("");
+                    app.changeEmployeeMenu(false);
+                    break;
+                case ":wq":
                     forceExit();
                     break;
                 default:
@@ -139,45 +88,47 @@ public class UserInterface {
         }
     }
 
+    public void checkUserCredentials(String username, String password) {
+        if (username.equals("payroll_staff") && password.equals("12345")) {
+            app.setUserRole("payroll_staff");
+        } else if (username.equals("employee") && password.equals("12345")) {
+            app.setUserRole("employee");
+        } else {
+            app.setUserRole("");
+            System.out.println("------------------------------");
+            System.out.println("Invalid credentials. Please try again.");
+            System.out.println("------------------------------");
+            forceExit();
+        }
+    }
+
     public void displayMainMenu() {
         while (app.isAppRunning()) {
             clearScreen();
-            System.out.println("\nEnter your role:");
-            System.out.println("a. Payroll staff");
-            System.out.println("b. Employee");
-            System.out.println(":q. Exit");
-            System.out.println("Choice: ");
-            String roleInput = scanner.nextLine();
+            System.out.println("Please Login to continue");
+            System.out.println("Username: ");
+            String usernameInput = scanner.nextLine();
+            System.out.println("Password: ");
+            String passwordInput = scanner.nextLine();
+
+            checkUserCredentials(usernameInput, passwordInput);
 
             // reset
             app.changePayrollStaffMenu(true);
             app.changeEmployeeMenu(true);
-            app.changePayrollMenu(true);
-            app.changeViewDetailsMenu(true);
-            app.changeImportEmployeeRecordsMenu(true);
-            app.setUserRole("");
 
             // role menu
-            switch (roleInput) {
-                case "a":
-                    app.setUserRole("payroll staff");
+            switch (app.getUserRole()) {
+                case "payroll_staff":
                     clearScreen();
                     displayHeader();
                     displayPayrollStaffMenu();
                     break;
-                case "b":
-                    app.setUserRole("employee");
+                case "employee":
                     clearScreen();
                     displayHeader();
                     displayEmployeeMenu();
                     break;
-                case ":q":
-                    clearScreen();
-                    // exit program
-                    forceExit();
-                    break;
-                default:
-                    System.out.println("Invalid Role");
             }
         }
 

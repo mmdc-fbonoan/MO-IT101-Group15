@@ -5,9 +5,6 @@ public class StoreApp {
     private boolean appRunning = true;
     private boolean payrollStaffMenu = true;
     private boolean employeeMenu = true;
-    private boolean payrollMenu = true;
-    private boolean viewDetailsMenu = true;
-    private boolean importEmployeeRecordsMenu = true;
     private String userRole = "";
 
     // getters
@@ -21,18 +18,6 @@ public class StoreApp {
 
     public boolean isEmployeeMenu() {
         return employeeMenu;
-    }
-
-    public boolean isPayrollMenu() {
-        return payrollMenu;
-    }
-
-    public boolean isViewDetailsMenu() {
-        return viewDetailsMenu;
-    }
-
-    public boolean isImportEmployeeRecordsMenu() {
-        return importEmployeeRecordsMenu;
     }
 
     public String getUserRole() {
@@ -50,18 +35,6 @@ public class StoreApp {
 
     public void changeEmployeeMenu(boolean input) {
         this.employeeMenu = input;
-    }
-
-    public void changePayrollMenu(boolean input) {
-        this.payrollMenu = input;
-    }
-
-    public void changeViewDetailsMenu(boolean input) {
-        this.viewDetailsMenu = input;
-    }
-
-    public void changeImportEmployeeRecordsMenu(boolean input) {
-        this.importEmployeeRecordsMenu = input;
     }
 
     public void setUserRole(String userRole) {
