@@ -1,15 +1,11 @@
-package org.example;
+package org.example.ui;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.Test;
 
 public class UserInterfaceTest {
-
-    // - **Arrange**: setup data and objects
-    // - **Act**: call the method
-    // - **Assert**: verify result
-
     // sucessful login tests
     @Test
     void validPayrollStaffSetsRole() {

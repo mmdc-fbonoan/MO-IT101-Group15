@@ -1,4 +1,9 @@
-package org.example;
+package org.example.store;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import org.example.model.AttendanceRecordModel;
+import org.example.model.EmployeeModel;
 
 public class StoreApp {
     // UI state variables
@@ -42,10 +47,12 @@ public class StoreApp {
     }
 
     // CSV file paths and validation status
-    private String attendanceFilePath = "public/employee_attendance.csv";
+    private String attendanceFilePath = "public/attendance_record.csv";
     private String employeeDetailsFilePath = "public/employee_details.csv";
     private boolean isAttendanceFileValid = false;
     private boolean isEmployeeDetailsFileValid = false;
+    private HashMap<String, EmployeeModel> employeeData = new HashMap<>();
+    private HashMap<String, ArrayList<AttendanceRecordModel>> attendanceData = new HashMap<>();
 
     // getters
     public String getAttendanceFilePath() {
@@ -64,6 +71,14 @@ public class StoreApp {
         return isEmployeeDetailsFileValid;
     }
 
+    public HashMap<String, EmployeeModel> getEmployeeData() {
+        return employeeData;
+    }
+
+    public HashMap<String, ArrayList<AttendanceRecordModel>> getAttendanceData() {
+        return attendanceData;
+    }
+
     // setters
     public void setAttendanceFilePath(String attendanceFilePath) {
         this.attendanceFilePath = attendanceFilePath;
@@ -79,5 +94,22 @@ public class StoreApp {
 
     public void changeEmployeeDetailsFileValid(boolean input) {
         this.isEmployeeDetailsFileValid = input;
+    }
+
+    public void setEmployeeData(HashMap<String, EmployeeModel> employeeData) {
+        this.employeeData = employeeData;
+    }
+
+    public void setAttendanceData(HashMap<String, ArrayList<AttendanceRecordModel>> attendanceData) {
+        this.attendanceData = attendanceData;
+    }
+
+    // custom methods
+    public ArrayList<String> getAllEmployeeNumber() {
+        ArrayList<String> employeeNumbers = new ArrayList<>();
+        for (String employeeNumber : employeeData.keySet()) {
+            employeeNumbers.add(employeeNumber);
+        }
+        return employeeNumbers;
     }
 }

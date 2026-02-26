@@ -1,6 +1,12 @@
-package org.example;
+package org.example.ui;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
+import org.example.model.AttendanceRecordModel;
+import org.example.model.EmployeeModel;
+import org.example.store.StoreApp;
+import org.example.utils.ReadFromTextFile;
 
 public class UserInterface {
 
@@ -18,7 +24,30 @@ public class UserInterface {
         app.changeApp(false);
     }
 
+    private void getCSVData() {
+        ReadFromTextFile readFromTextFile = new ReadFromTextFile();
+
+        // employee details
+        HashMap<String, EmployeeModel> employees = readFromTextFile.getEmployeeData(app.getEmployeeDetailsFilePath());
+        app.setEmployeeData(employees);
+        app.changeEmployeeDetailsFileValid(!employees.isEmpty());
+
+        // attedance record
+        HashMap<String, ArrayList<AttendanceRecordModel>> attendance =
+                readFromTextFile.getAttendanceData(app.getAttendanceFilePath(), app.getAllEmployeeNumber());
+        app.setAttendanceData(attendance);
+        app.changeAttendanceFileValid(!attendance.isEmpty());
+    }
+
     private void displayHeader() {
+
+        getCSVData();
+
+        // HashMap<String, EmployeeModel> employees = app.getEmployeeData();
+        // HashMap<String, ArrayList<AttendanceRecordModel>> attendance = app.getAttendanceData();
+        // System.out.println(employees);
+        // System.out.println(attendance);
+
         System.out.println("------------------------------");
         System.out.println("Current Role: " + app.getUserRole());
         System.out.println("Attendance CSV Status: " + app.isAttendanceFileValid());
