@@ -19,8 +19,6 @@ public class Main {
         // File paths and data structures
         String attendanceFilePath = "public/attendance_record.csv";
         String employeeDetailsFilePath = "public/employee_details.csv";
-        boolean isAttendanceFileValid = false;
-        boolean isEmployeeDetailsFileValid = false;
         HashMap<String, ArrayList> employeeData = new HashMap<>();
         Map<String, List<String[]>> attendanceData = new HashMap<>();
         ArrayList<String> allEmployeeNumbers = new ArrayList<>();
