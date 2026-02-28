@@ -55,7 +55,6 @@ public class UserInterface {
         System.out.println("------------------------------");
     }
 
-    // KISS
     private void displayPayrollStaffMenu() {
         while (app.isPayrollStaffMenu()) {
             System.out.println("\nChoose an option:");
@@ -87,7 +86,6 @@ public class UserInterface {
     }
 
     private void displayEmployeeDetails() {
-        // app.changeEmployeeMenu(false);
         System.out.println("Please enter your employee number: ");
         String employeeNumber = scanner.nextLine();
 
@@ -119,7 +117,6 @@ public class UserInterface {
         }
     }
 
-    // KISS
     private void displayEmployeeMenu() {
         while (app.isEmployeeMenu()) {
             System.out.println("Choose an option:");
