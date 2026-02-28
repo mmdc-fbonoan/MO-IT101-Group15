@@ -86,10 +86,43 @@ public class UserInterface {
         }
     }
 
+    private void displayEmployeeDetails() {
+        // app.changeEmployeeMenu(false);
+        System.out.println("Please enter your employee number: ");
+        String employeeNumber = scanner.nextLine();
+
+        EmployeeModel data = app.getEmployeeData().get(employeeNumber);
+
+        if (data == null) {
+            clearScreen();
+            System.out.println("------------------------------");
+            System.out.println("Employee number does not exist.");
+            System.out.println("------------------------------");
+        } else {
+            clearScreen();
+            String id = data.getEmployeeId();
+            String birthday = data.getEmployeeBirthday();
+            String firstName = data.getEmployeeFirstName();
+            String surname = data.getEmployeeLastName();
+
+            String[] headers = {"Employee #", "Name", "Birthday"};
+
+            Object[][] sample = {
+                {id, firstName + " " + surname, birthday},
+            };
+
+            System.out.format("%-11s%-20s%-11s%n", (Object[]) headers);
+
+            System.out.format("%-11s%-20s%-11s%n", sample[0]);
+
+            System.out.println("------------------------------");
+        }
+    }
+
     // KISS
     private void displayEmployeeMenu() {
         while (app.isEmployeeMenu()) {
-            System.out.println("\nChoose an option:");
+            System.out.println("Choose an option:");
             System.out.println("a. Enter your employee number");
             System.out.println(":q. Logout");
             System.out.println(":wq. Exit the program");
@@ -100,8 +133,8 @@ public class UserInterface {
             switch (optionInput) {
                 case "a":
                     clearScreen();
-                    System.out.println("Enter your employee number");
                     displayHeader();
+                    displayEmployeeDetails();
                     break;
                 case ":q":
                     clearScreen();

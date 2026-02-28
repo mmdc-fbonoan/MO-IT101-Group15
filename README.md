@@ -39,10 +39,6 @@ sudo apt install openjdk-25-jdk
 ```bash
 ./gradlew build
 ```
-### Windows
-```bash
-gradlew.bat build
-```
 Run the generated JAR:
 ```bash
 java -jar build/libs/MO-IT101-Group15-0.0.0.jar
