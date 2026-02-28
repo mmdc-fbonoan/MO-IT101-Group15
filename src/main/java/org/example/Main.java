@@ -64,7 +64,6 @@ public class Main {
                 employeeData.put(parts[0].trim(), details);
             }
 
-            System.out.println("Loaded employees: " + employeeData.size());
         } catch (IOException e) {
             System.out.println("Failed to read file: " + e.getMessage());
         }
