@@ -105,13 +105,13 @@ public class UserInterface {
 
             String[] headers = {"Employee #", "Name", "Birthday"};
 
-            Object[][] sample = {
+            Object[][] details = {
                 {id, firstName + " " + surname, birthday},
             };
 
             System.out.format("%-11s%-20s%-11s%n", (Object[]) headers);
 
-            System.out.format("%-11s%-20s%-11s%n", sample[0]);
+            System.out.format("%-11s%-20s%-11s%n", details[0]);
 
             System.out.println("------------------------------");
         }
