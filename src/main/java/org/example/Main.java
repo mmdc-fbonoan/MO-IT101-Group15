@@ -261,7 +261,6 @@ public class Main {
         LocalTime login = LocalTime.parse(timeInRaw, timeFmt);
         LocalTime logout = LocalTime.parse(timeOutRaw, timeFmt);
 
-        // same logic as rods.java
         LocalTime startLimit = LocalTime.of(8, 0);
         LocalTime endLimit = LocalTime.of(17, 0);
 
