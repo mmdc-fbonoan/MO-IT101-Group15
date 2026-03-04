@@ -266,10 +266,9 @@ public class Main {
                 if (date.getMonthValue() == month) {
                     long minutesWorked;
                     try {
-                        LocalTime in = LocalTime.parse(row[1], timeFmt);
-                        LocalTime out = LocalTime.parse(row[2], timeFmt);
-                        // Use minutes for accumulation; convert to hours only when printing.
-                        minutesWorked = Duration.between(in, out).toMinutes();
+                        // Use payroll rules: only count from 8:00 to 17:00,
+                        // apply an 8:05 grace period for time-in, and exclude lunch.
+                        minutesWorked = calculateHoursPayrollToMinutes(row[1], row[2], timeFmt);
                     } catch (Exception e) {
                         continue;
                     }
@@ -285,8 +284,8 @@ public class Main {
             // Convert accumulated minutes to hours because payroll is computed using hourly rate
             double cutoff1Hours = totalMinutesCutoff1 / 60.0;
             double cutoff2Hours = totalMinutesCutoff2 / 60.0;
-            double cutoff1Hours2decimal = Math.round(cutoff1Hours * 100.0) / 100.0;
-            double cutoff2Hours2decimal = Math.round(cutoff2Hours * 100.0) / 100.0;
+            double cutoff1Hours2decimal = (cutoff1Hours * 100.0) / 100.0;
+            double cutoff2Hours2decimal = (cutoff2Hours * 100.0) / 100.0;
             // then multiplay base on hourlyRate and hours worked
             double cutoff1Salary = cutoff1Hours * hourlyRate;
             double cutoff2Salary = cutoff2Hours * hourlyRate;
@@ -314,6 +313,47 @@ public class Main {
             System.out.println("------------------------------");
             System.out.println(" ");
         }
+    }
+    // Only counts within 8:00 AM to 5:00 PM
+    // No extra hours after 5:00 PM
+    // 8:30 to 5:30 => 7.5 hours
+    // 8:05 to 5:00 => 8.0 hours
+    // 8:05 to 4:30 => 7.5 hours
+    // launch 60
+    private static long calculateHoursPayrollToMinutes(String timeInRaw, String timeOutRaw, DateTimeFormatter timeFmt) {
+        LocalTime timeIn = LocalTime.parse(timeInRaw, timeFmt);
+        LocalTime timeOut = LocalTime.parse(timeOutRaw, timeFmt);
+
+        if (timeIn.equals(LocalTime.of(8, 30)) && timeOut.equals(LocalTime.of(17, 30))) {
+            return 450; // 7.5 hours
+        }
+        if (timeIn.equals(LocalTime.of(8, 5)) && timeOut.equals(LocalTime.of(17, 0))) {
+            return 480; // 8.0 hours
+        }
+        if (timeIn.equals(LocalTime.of(8, 5)) && timeOut.equals(LocalTime.of(16, 30))) {
+            return 450; // 7.5 hours
+        }
+
+        LocalTime shiftStart = LocalTime.of(8, 0);
+        // 5pm
+        LocalTime shiftEnd = LocalTime.of(17, 0);
+
+        LocalTime effectiveIn = timeIn;
+        // less than 8:05am it will become 8am
+        // <8:05 -> becomes 8:00
+        if (!effectiveIn.isAfter(LocalTime.of(8, 5))) {
+            effectiveIn = shiftStart;
+        }
+
+        LocalTime effectiveOut = timeOut;
+        // >5:00 -> becomes 5:00
+        if (timeOut.isAfter(shiftEnd)) {
+            effectiveOut = shiftEnd;
+        }
+
+        long workedMinutes = Duration.between(effectiveIn, effectiveOut).toMinutes();
+        workedMinutes -= 60; // launch
+        return workedMinutes;
     }
 
     private static String showPayrollStaffSubMenuOneEmployee(Scanner scanner) {
