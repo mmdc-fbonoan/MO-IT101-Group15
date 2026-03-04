@@ -1,27 +1,28 @@
-
 package org.example;
 
-import java.io.*; 
+import java.io.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Motorph_Test {
- // Global configurations
-   //static String empFile = "C:/Users/DEL/Documents/NetBeansProjects/Motorph_Test/src/motorph_test/EmployeeDetails.csv";
-   //static String attendanceFile = "C:/Users/DEL/Documents/NetBeansProjects/Motorph_Test/src/motorph_test/AttendanceRecord.csv";
-   
-     String empFile = "public/attendance_record.csv";
-     String attendanceFile = "public/employee_details.csv";
-    
+public class Main {
+    // Global configurations
+    // static String empFile =
+    // "C:/Users/DEL/Documents/NetBeansProjects/Motorph_Test/src/motorph_test/EmployeeDetails.csv";
+    // static String attendanceFile =
+    // "C:/Users/DEL/Documents/NetBeansProjects/Motorph_Test/src/motorph_test/AttendanceRecord.csv";
+
+    static String empFile = "public/employee_details.csv";
+    static String attendanceFile = "public/attendance_record.csv";
+
     // static String empFile = "src/motorph_test - EmployeeDetails.csv";
-     //static String attendanceFile = "src/motorph_test - AttendanceRecord.csv";
-    
+    // static String attendanceFile = "src/motorph_test - AttendanceRecord.csv";
+
     static Scanner scanner = new Scanner(System.in);
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("H:mm");
-    
+
     public static void main(String[] args) {
-      // --- 1. LOGIN SYSTEM ---
+        // --- 1. LOGIN SYSTEM ---
         System.out.println("=== MotorPH Login ===");
         System.out.print("Username: ");
         String username = scanner.nextLine();
@@ -60,7 +61,7 @@ public class Motorph_Test {
             }
         }
     }
-            //If user is Payroll_Staff proceed to display option
+    // If user is Payroll_Staff proceed to display option
     private static void handlePayrollStaffMenu() {
         while (true) {
             System.out.println("\n--- Payroll Staff Display Option ---");
@@ -76,7 +77,7 @@ public class Motorph_Test {
             }
         }
     }
-            //Display Sub-Option One Employee or All Employee 
+    // Display Sub-Option One Employee or All Employee
     private static void processPayrollMenu() {
         System.out.println("\n--- Process Payroll (No Allowances) ---");
         System.out.println("1. One employee");
@@ -99,10 +100,10 @@ public class Motorph_Test {
     private static void displayEmployeeBasicDetails(String empNum) {
         String[] data = findEmployeeRecord(empNum);
         if (data != null) {
-            
+
             System.out.println("\n========================================");
             System.out.println("         MOTORPH EMPLOYEE INFORMATION       ");
-            System.out.println ("========================================");
+            System.out.println("========================================");
             System.out.println("Employee Number: " + data[0]);
             System.out.println("Employee Name: " + data[2] + " " + data[1]);
             System.out.println("Birthday: " + data[3]);
@@ -130,23 +131,23 @@ public class Motorph_Test {
         }
     }
 
-    private static void calculateAndDisplayCutoff(String[] emp, String month, int start, int end, double rate, boolean isSecondCutoff) {
+    private static void calculateAndDisplayCutoff(
+            String[] emp, String month, int start, int end, double rate, boolean isSecondCutoff) {
         double hours = getTotalHoursForPeriod(emp[0], month, start, end);
         double gross = hours * rate;
 
-        
         // --- OUTPUT FORMATTING ---
         System.out.println("\n========================================");
         System.out.println("         MOTORPH PAYROLL SUMMARY        ");
-        System.out.println ("========================================");
-        //System.out.println("\n----------------------------------------");
+        System.out.println("========================================");
+        // System.out.println("\n----------------------------------------");
         System.out.println("Employee #: " + emp[0]);
         System.out.println("Employee Name: " + emp[2] + " " + emp[1]);
         System.out.println("Cutoff Date: " + getMonthName(month) + " " + start + " to " + end);
         System.out.println("Total Hours Worked: " + hours);
         System.out.println("Gross Salary: " + gross);
         System.out.println("========================================");
-        
+
         if (isSecondCutoff) {
             // Requirement 5: Add 1st and 2nd cutoff amounts first before computing deductions
             double firstCutoffHours = getTotalHoursForPeriod(emp[0], month, 1, 15);
@@ -181,14 +182,15 @@ public class Motorph_Test {
                 String[] d = line.split(",");
                 String[] dateParts = d[3].split("/"); // Expected format MM/DD/YYYY
                 int dDay = Integer.parseInt(dateParts[1]);
-                
+
                 if (d[0].equals(empNum) && dateParts[0].equals(month) && dDay >= start && dDay <= end) {
                     LocalTime login = LocalTime.parse(d[4], timeFormat);
                     LocalTime logout = LocalTime.parse(d[5], timeFormat);
                     total += computeWorkHours(login, logout);
                 }
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return total;
     }
 
@@ -203,7 +205,7 @@ public class Motorph_Test {
         // Logic 4b, c, d: Handle specific login/logout durations
         long mins = Duration.between(login, logout).toMinutes();
         if (mins > 60) mins -= 60; // Standard lunch break
-        
+
         return mins / 60.0;
     }
 
@@ -217,7 +219,8 @@ public class Motorph_Test {
                 String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 if (data[0].trim().equals(empNum)) return data;
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return null;
     }
 
@@ -229,7 +232,8 @@ public class Motorph_Test {
                 String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
                 processFullPayroll(data[0].trim());
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     // Reuse existing deduction logic from Milestone 1
