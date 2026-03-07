@@ -6,17 +6,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
-    // Global configurations
-    // static String empFile =
-    // "C:/Users/DEL/Documents/NetBeansProjects/Motorph_Test/src/motorph_test/EmployeeDetails.csv";
-    // static String attendanceFile =
-    // "C:/Users/DEL/Documents/NetBeansProjects/Motorph_Test/src/motorph_test/AttendanceRecord.csv";
+  
 
     static String empFile = "public/employee_details.csv";
     static String attendanceFile = "public/attendance_record.csv";
 
-    // static String empFile = "src/motorph_test - EmployeeDetails.csv";
-    // static String attendanceFile = "src/motorph_test - AttendanceRecord.csv";
+    
 
     static Scanner scanner = new Scanner(System.in);
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("H:mm");
@@ -95,7 +90,7 @@ public class Main {
         }
     }
 
-    // --- 3. CORE LOGIC ---
+    // --- 3. CORE LOGIC & Display Output---
 
     private static void displayEmployeeBasicDetails(String empNum) {
         String[] data = findEmployeeRecord(empNum);
