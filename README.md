@@ -1,12 +1,30 @@
 # 📦 MO-IT101-Group15
-MMDC Milestone 2
+Team Details
+- Project setup: John Kenneth Racelis
+- CSV Reader: John Kenneth Racelis
+- Hours Worked Calculation: Rodelconrad Aday
+- Gross and Net Pay: Rodelconrad Aday
+- Show Employee Information: John Kenneth Racelis
+
+Program Details
+- Console-based MotorPH payroll system with two roles: employee and payroll_staff.
+- Reads employee and attendance data from CSV files.
+- The program starts with a login prompt and supports two user roles: `employee` and `payroll_staff` with the password `12345`
+- employee can view basic employee info using employee number.
+- payroll_staff can process payroll for one employee or all employees.
+- Payroll runs for June-December with two cutoffs per month (1-15, 16-31).
+- Work hours count only between 8:00 AM and 5:00 PM, minus 1-hour lunch break.
+- Computes gross pay, then deductions (SSS, PhilHealth, Pag-IBIG, tax) to get net pay.
+
+Project Plan Link
+- [spreadsheets_link](https://docs.google.com/spreadsheets/d/1oGS8OfyJHqV2tVsEiWUQSEDbwsIJC_nYP4yy37y5gCI/edit?usp=sharing)
 
 ---
 ## 🚀 Tech Stack
 * Java 25
 * Gradle
 * JUnit 5
-* Spotless (Palantir formatter)
+* Spotless (formatter)
 
 ---
 ## 📁 Project Structure
@@ -19,9 +37,7 @@ MO-IT101-Group15/
 ├── gradlew.bat
 ├── src/
 │   ├── main/java/
-|   |          ├── store/
-|   |          ├── ui/
-|   |          ├── utils/
+|   |          ├── Main.java
 │   └── test/java/
 ```
 
