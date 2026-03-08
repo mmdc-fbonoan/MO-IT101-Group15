@@ -30,15 +30,13 @@ public class Main {
         String password = scanner.nextLine();
 
         // Validate credentials
-        if (password.equals("12345") && (username.equals("employee") || username.equals("payroll_staff"))) {
-            if (username.equals("employee")) {
-                handleEmployeeMenu();
-            } else {
-                handlePayrollStaffMenu();
-            }
+        if ("employee".equals(username) && "12345".equals(password)) {
+            handleEmployeeMenu();
+        } else if ("payroll_staff".equals(username) && "12345".equals(password)) {
+            handlePayrollStaffMenu();
         } else {
             System.out.println("Incorrect username and/or password.");
-            System.exit(0); // Terminate program
+            System.exit(0);
         }
     }
 
@@ -238,7 +236,7 @@ public class Main {
         }
     }
 
-    // Use existing deduction logic from CSV Motorph Requirement  
+    // Use existing deduction logic from CSV Motorph Requirement
     public static double computeSSS(double gross) {
         if (gross >= 24750) return 1125.00;
         if (gross < 3250) return 135.00;
