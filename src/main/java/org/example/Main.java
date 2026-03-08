@@ -22,15 +22,13 @@ public class Main {
         String password = scanner.nextLine();
 
         // Validate credentials
-        if (password.equals("12345") && (username.equals("employee") || username.equals("payroll_staff"))) {
-            if (username.equals("employee")) {
-                handleEmployeeMenu();
-            } else {
-                handlePayrollStaffMenu();
-            }
+        if ("employee".equals(username) && "12345".equals(password)) {
+            handleEmployeeMenu();
+        } else if ("payroll_staff".equals(username) && "12345".equals(password)) {
+            handlePayrollStaffMenu();
         } else {
             System.out.println("Incorrect username and/or password.");
-            System.exit(0); // Terminate program
+            System.exit(0);
         }
     }
 
