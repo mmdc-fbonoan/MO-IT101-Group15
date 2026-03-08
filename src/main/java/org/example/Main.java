@@ -6,17 +6,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
-    // Global configurations
-    // static String empFile =
-    // "C:/Users/DEL/Documents/NetBeansProjects/Motorph_Test/src/motorph_test/EmployeeDetails.csv";
-    // static String attendanceFile =
-    // "C:/Users/DEL/Documents/NetBeansProjects/Motorph_Test/src/motorph_test/AttendanceRecord.csv";
 
     static String empFile = "public/employee_details.csv";
     static String attendanceFile = "public/attendance_record.csv";
-
-    // static String empFile = "src/motorph_test - EmployeeDetails.csv";
-    // static String attendanceFile = "src/motorph_test - AttendanceRecord.csv";
 
     static Scanner scanner = new Scanner(System.in);
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("H:mm");
@@ -44,7 +36,7 @@ public class Main {
 
     private static void handleEmployeeMenu() {
         while (true) {
-            System.out.println("\n--- Employee Display Option ---");
+            System.out.println("--- Employee Display Option ---");
             System.out.println("1. Enter your employee number");
             System.out.println("2. Exit the program");
             System.out.print("Choice: ");
@@ -62,7 +54,7 @@ public class Main {
     // If user is Payroll_Staff proceed to display option
     private static void handlePayrollStaffMenu() {
         while (true) {
-            System.out.println("\n--- Payroll Staff Display Option ---");
+            System.out.println("--- Payroll Staff Display Option ---");
             System.out.println("1. Process Payroll");
             System.out.println("2. Exit the program");
             System.out.print("Choice: ");
@@ -77,7 +69,7 @@ public class Main {
     }
     // Display Sub-Option One Employee or All Employee
     private static void processPayrollMenu() {
-        System.out.println("\n--- Process Payroll (No Allowances) ---");
+        System.out.println("--- Process Payroll (No Allowances) ---");
         System.out.println("1. One employee");
         System.out.println("2. All employees");
         System.out.println("3. Exit");
@@ -99,7 +91,7 @@ public class Main {
         String[] data = findEmployeeRecord(empNum);
         if (data != null) {
 
-            System.out.println("\n========================================");
+            System.out.println("========================================");
             System.out.println("         MOTORPH EMPLOYEE INFORMATION       ");
             System.out.println("========================================");
             System.out.println("Employee Number: " + data[0]);
@@ -135,7 +127,7 @@ public class Main {
         double gross = hours * rate;
 
         // --- OUTPUT FORMATTING ---
-        System.out.println("\n========================================");
+        System.out.println("========================================");
         System.out.println("         MOTORPH PAYROLL SUMMARY        ");
         System.out.println("========================================");
         // System.out.println("\n----------------------------------------");
@@ -171,7 +163,7 @@ public class Main {
         }
     }
 
-    // --- 4. CALCULATION HELPERS ---
+    // --- 4. CALCULATION  ---
 
     private static double getTotalHoursForPeriod(String empNum, String month, int start, int end) {
         double total = 0;
@@ -238,15 +230,29 @@ public class Main {
 
     // Use existing deduction logic from CSV Motorph Requirement
     public static double computeSSS(double gross) {
-        if (gross >= 24750) return 1125.00;
-        if (gross < 3250) return 135.00;
-        double contribution = 157.50;
-        double floor = 3250;
-        while (floor + 500 <= gross) {
-            contribution += 22.50;
-            floor += 500;
+        // Salary lower bounds from SSS table
+        double[] salaryLimits = {
+            0, 3250, 3750, 4250, 4750, 5250, 5750, 6250, 6750, 7250, 7750, 8250, 8750, 9250, 9750, 10250, 10750, 11250,
+            11750, 12250, 12750, 13250, 13750, 14250, 14750, 15250, 15750, 16250, 16750, 17250, 17750, 18250, 18750,
+            19250, 19750, 20250, 20750, 21250, 21750, 22250, 22750, 23250, 23750, 24250, 24750
+        };
+
+        // Corresponding contributions from SSS table
+        double[] contributions = {
+            135.0, 157.5, 180.0, 202.5, 225.0, 247.5, 270.0, 292.5, 315.0, 337.5,
+            360.0, 382.5, 405.0, 427.5, 450.0, 472.5, 495.0, 517.5, 540.0, 562.5,
+            585.0, 607.5, 630.0, 652.5, 675.0, 697.5, 720.0, 742.5, 765.0, 787.5,
+            810.0, 832.5, 855.0, 877.5, 900.0, 922.5, 945.0, 967.5, 990.0, 1012.5,
+            1035.0, 1057.5, 1080.0, 1102.5, 1125.0
+        };
+
+        // Iterate backwards to find which bracket the gross salary falls into
+        for (int i = salaryLimits.length - 1; i >= 0; i--) {
+            if (gross >= salaryLimits[i]) {
+                return contributions[i];
+            }
         }
-        return contribution;
+        return 135.0; // Default minimum
     }
 
     public static double computePhilHealth(double gross) {
