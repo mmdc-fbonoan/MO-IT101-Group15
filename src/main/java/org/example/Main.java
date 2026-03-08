@@ -228,7 +228,7 @@ public class Main {
         }
     }
 
-    // Use existing deduction logic from CSV Motorph Requirement
+    // SSS deduction  based on the Salary range from SSS CSV file of Motorph Requirement
     public static double computeSSS(double gross) {
         // Salary lower bounds from SSS table
         double[] salaryLimits = {
