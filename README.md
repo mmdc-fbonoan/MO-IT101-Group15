@@ -1,12 +1,16 @@
 # 📦 MO-IT101-Group15
+
 Team Details
+
 - Project setup: John Kenneth Racelis
 - CSV Reader: John Kenneth Racelis
 - Hours Worked Calculation: Rodelconrad Aday
 - Gross and Net Pay: Rodelconrad Aday
 - Show Employee Information: John Kenneth Racelis
+- Error Handling: Felix Bonoan
 
 Program Details
+
 - Console-based MotorPH payroll system with two roles: employee and payroll_staff.
 - Reads employee and attendance data from CSV files.
 - The program starts with a login prompt and supports two user roles: `employee` and `payroll_staff` with the password `12345`
@@ -17,17 +21,22 @@ Program Details
 - Computes gross pay, then deductions (SSS, PhilHealth, Pag-IBIG, tax) to get net pay.
 
 Project Plan Link
+
 - [spreadsheets_link](https://docs.google.com/spreadsheets/d/1oGS8OfyJHqV2tVsEiWUQSEDbwsIJC_nYP4yy37y5gCI/edit?usp=sharing)
 
 ---
+
 ## 🚀 Tech Stack
-* Java 25
-* Gradle
-* JUnit 5
-* Spotless (formatter)
+
+- Java 25
+- Gradle
+- JUnit 5
+- Spotless (formatter)
 
 ---
+
 ## 📁 Project Structure
+
 ```
 MO-IT101-Group15/
 ├── .github/workflows/java-ci.yml
@@ -42,24 +51,35 @@ MO-IT101-Group15/
 ```
 
 ---
+
 ## 🛠 Installation
+
 ### Ubuntu
+
 Install JDK 25:
+
 ```bash
 sudo apt install openjdk-25-jdk
 ```
 
 ---
+
 ## 🔧 Build
+
 ### Linux / macOS
+
 ```bash
 ./gradlew build
 ```
+
 Run the generated JAR:
+
 ```bash
 java -jar build/libs/MO-IT101-Group15-0.0.0.jar
 ```
+
 ---
+
 ## ▶ Run Application
 
 ```bash
@@ -67,7 +87,9 @@ java -jar build/libs/MO-IT101-Group15-0.0.0.jar
 ```
 
 ## 🐳 running in docker (Optional)
- - Project folder is bind-mounted (shared with container).
+
+- Project folder is bind-mounted (shared with container).
+
 ```bash
 # Build
 docker compose build
@@ -78,18 +100,27 @@ docker compose run --rm -it java
 ```
 
 ---
+
 ## 🧪 Run Tests
+
 ```bash
 ./gradlew test
 ```
+
 ---
+
 ## 🎨 Code Formatting
+
 Format code:
+
 ```bash
 ./gradlew spotlessApply
 ```
+
 Check formatting:
+
 ```bash
 ./gradlew spotlessCheck
 ```
+
 Formatting is enforced during `build`.

@@ -1,9 +1,11 @@
 package org.example;
 
-import java.io.*;
-import java.time.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
 
@@ -33,7 +35,6 @@ public class Main {
     }
 
     // --- 2. MENU HANDLERS ---
-
     private static void handleEmployeeMenu() {
         while (true) {
             System.out.println("--- Employee Display Option ---");
@@ -51,6 +52,7 @@ public class Main {
             }
         }
     }
+
     // If user is Payroll_Staff proceed to display option
     private static void handlePayrollStaffMenu() {
         while (true) {
@@ -67,6 +69,7 @@ public class Main {
             }
         }
     }
+
     // Display Sub-Option One Employee or All Employee
     private static void processPayrollMenu() {
         System.out.println("--- Process Payroll (No Allowances) ---");
@@ -86,7 +89,6 @@ public class Main {
     }
 
     // --- 3. CORE LOGIC ---
-
     private static void displayEmployeeBasicDetails(String empNum) {
         String[] data = findEmployeeRecord(empNum);
         if (data != null) {
@@ -164,7 +166,6 @@ public class Main {
     }
 
     // --- 4. CALCULATION  ---
-
     private static double getTotalHoursForPeriod(String empNum, String month, int start, int end) {
         double total = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(attendanceFile))) {
@@ -182,6 +183,7 @@ public class Main {
                 }
             }
         } catch (Exception e) {
+            System.out.println("File error: " + e.getMessage());
         }
         return total;
     }
@@ -191,27 +193,34 @@ public class Main {
         LocalTime startLimit = LocalTime.of(8, 0);
         LocalTime endLimit = LocalTime.of(17, 0);
 
-        if (login.isBefore(startLimit)) login = startLimit;
-        if (logout.isAfter(endLimit)) logout = endLimit;
+        if (login.isBefore(startLimit)) {
+            login = startLimit;
+        }
+        if (logout.isAfter(endLimit)) {
+            logout = endLimit;
+        }
 
         // Logic 4b, c, d: Handle specific login/logout durations
         long mins = Duration.between(login, logout).toMinutes();
-        if (mins > 60) mins -= 60; // Standard lunch break
-
+        if (mins > 60) {
+            mins -= 60; // Standard lunch break
+        }
         return mins / 60.0;
     }
 
     // --- 5. DATA HELPERS ---
-
     private static String[] findEmployeeRecord(String empNum) {
         try (BufferedReader br = new BufferedReader(new FileReader(empFile))) {
             br.readLine();
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                if (data[0].trim().equals(empNum)) return data;
+                if (data[0].trim().equals(empNum)) {
+                    return data;
+                }
             }
         } catch (Exception e) {
+            System.out.println("File error: " + e.getMessage());
         }
         return null;
     }
@@ -225,6 +234,7 @@ public class Main {
                 processFullPayroll(data[0].trim());
             }
         } catch (Exception e) {
+            System.out.println("File error: " + e.getMessage());
         }
     }
 
@@ -261,11 +271,21 @@ public class Main {
     }
 
     public static double computeIncomeTax(double taxable) {
-        if (taxable <= 20832) return 0;
-        if (taxable <= 33332) return (taxable - 20833) * 0.20;
-        if (taxable <= 66666) return 2500 + (taxable - 33333) * 0.25;
-        if (taxable <= 166666) return 10833 + (taxable - 66667) * 0.30;
-        if (taxable <= 666666) return 40833.33 + (taxable - 166667) * 0.32;
+        if (taxable <= 20832) {
+            return 0;
+        }
+        if (taxable <= 33332) {
+            return (taxable - 20833) * 0.20;
+        }
+        if (taxable <= 66666) {
+            return 2500 + (taxable - 33333) * 0.25;
+        }
+        if (taxable <= 166666) {
+            return 10833 + (taxable - 66667) * 0.30;
+        }
+        if (taxable <= 666666) {
+            return 40833.33 + (taxable - 166667) * 0.32;
+        }
         return 200833.33 + (taxable - 666667) * 0.35;
     }
 
