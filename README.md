@@ -7,7 +7,7 @@ Team Details
 - Hours Worked Calculation: Rodelconrad Aday
 - Gross and Net Pay: Rodelconrad Aday
 - Show Employee Information: John Kenneth Racelis
-- Error Handling: Felix Bonoan
+- Code Review: Felix Bonoan
 
 Program Details
 
