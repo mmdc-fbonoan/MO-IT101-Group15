@@ -7,7 +7,7 @@ Team Details
 - Hours Worked Calculation: Rodelconrad Aday
 - Gross and Net Pay: Rodelconrad Aday
 - Show Employee Information: John Kenneth Racelis
-- Error Handling: Felix Bonoan
+- Code Review: Felix Bonoan
 
 Program Details
 
@@ -75,7 +75,7 @@ sudo apt install openjdk-25-jdk
 Run the generated JAR:
 
 ```bash
-java -jar build/libs/MO-IT101-Group15-0.0.0.jar
+java -jar build/libs/MO-IT101-Group15-0.1.0.jar
 ```
 
 ---
