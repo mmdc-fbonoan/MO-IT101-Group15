@@ -223,6 +223,7 @@ public class Main {
 
         return mins / 60.0;
     }
+
     // --- 5. DATA HELPERS ---
     private static String[] findEmployeeRecord(String empNum) {
         try (BufferedReader br = new BufferedReader(new FileReader(empFile))) {
