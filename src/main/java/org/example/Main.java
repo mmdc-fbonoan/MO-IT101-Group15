@@ -193,11 +193,26 @@ public class Main {
         LocalTime startLimit = LocalTime.of(8, 0);
         LocalTime endLimit = LocalTime.of(17, 0);
 
+        // grace period, 10 min
+        LocalTime graceLimit = LocalTime.of(8, 10);
+
+        // Early login → normalize to 8:00
         if (login.isBefore(startLimit)) {
             login = startLimit;
         }
+        // Within grace period → also normalize to 8:00
+        else if (!login.isAfter(graceLimit)) {
+            login = startLimit;
+        }
+
+        // Adjust logout
         if (logout.isAfter(endLimit)) {
             logout = endLimit;
+        }
+
+        // Prevent negative value
+        if (logout.isBefore(login)) {
+            return 0;
         }
 
         // Logic 4b, c, d: Handle specific login/logout durations
@@ -205,9 +220,9 @@ public class Main {
         if (mins > 60) {
             mins -= 60; // Standard lunch break
         }
+
         return mins / 60.0;
     }
-
     // --- 5. DATA HELPERS ---
     private static String[] findEmployeeRecord(String empNum) {
         try (BufferedReader br = new BufferedReader(new FileReader(empFile))) {
