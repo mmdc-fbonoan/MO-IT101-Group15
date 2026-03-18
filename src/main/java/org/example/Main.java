@@ -44,8 +44,6 @@ public class Main {
     }
 
     private static void initData() {
-        employeeData.clear();
-        attendanceData.clear();
         loadEmployeeData();
         loadAttendanceData();
     }
