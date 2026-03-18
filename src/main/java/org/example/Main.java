@@ -104,14 +104,19 @@ public class Main {
 
     // --- 3. CORE LOGIC ---
     private static void displayEmployeeBasicDetails(String empNum) {
-        String[] data = findEmployeeRecord(empNum);
-        if (data != null) {
+        String[] empData = findEmployeeRecord(empNum);
+        if (empData != null) {
+            String employeeNumber = empData[0];
+            String lastName = empData[1];
+            String firstName = empData[2];
+            String birthday = empData[3];
+
             System.out.println("========================================");
             System.out.println("         MOTORPH EMPLOYEE INFORMATION       ");
             System.out.println("========================================");
-            System.out.println("Employee Number: " + data[0]);
-            System.out.println("Employee Name: " + data[2] + " " + data[1]);
-            System.out.println("Birthday: " + data[3]);
+            System.out.println("Employee Number: " + employeeNumber);
+            System.out.println("Employee Name: " + firstName + " " + lastName);
+            System.out.println("Birthday: " + birthday);
             System.out.println("========================================");
         } else {
             System.out.println("Employee number does not exist.");
@@ -125,20 +130,30 @@ public class Main {
             return;
         }
 
+        String employeeNumber = empData[0];
+        String lastName = empData[1];
+        String firstName = empData[2];
         double hourlyRate = Double.parseDouble(empData[18]);
         String[] months = {"06", "07", "08", "09", "10", "11", "12"}; // June to December
 
         for (String month : months) {
             // Cutoff 1: 1st to 15th
-            calculateAndDisplayCutoff(empData, month, 1, 15, hourlyRate, false);
+            calculateAndDisplayCutoff(employeeNumber, firstName, lastName, month, 1, 15, hourlyRate, false);
             // Cutoff 2: 16th to end (Includes deductions)
-            calculateAndDisplayCutoff(empData, month, 16, 31, hourlyRate, true);
+            calculateAndDisplayCutoff(employeeNumber, firstName, lastName, month, 16, 31, hourlyRate, true);
         }
     }
 
     private static void calculateAndDisplayCutoff(
-            String[] emp, String month, int start, int end, double rate, boolean isSecondCutoff) {
-        double hours = getTotalHoursForPeriod(emp[0], month, start, end);
+            String employeeNumber,
+            String firstName,
+            String lastName,
+            String month,
+            int start,
+            int end,
+            double rate,
+            boolean isSecondCutoff) {
+        double hours = getTotalHoursForPeriod(employeeNumber, month, start, end);
         double gross = hours * rate;
 
         // --- OUTPUT FORMATTING ---
@@ -146,8 +161,8 @@ public class Main {
         System.out.println("         MOTORPH PAYROLL SUMMARY        ");
         System.out.println("========================================");
         // System.out.println("\n----------------------------------------");
-        System.out.println("Employee #: " + emp[0]);
-        System.out.println("Employee Name: " + emp[2] + " " + emp[1]);
+        System.out.println("Employee #: " + employeeNumber);
+        System.out.println("Employee Name: " + firstName + " " + lastName);
         System.out.println("Cutoff Date: " + getMonthName(month) + " " + start + " to " + end);
         System.out.println("Total Hours Worked: " + hours);
         System.out.println("Gross Salary: " + gross);
@@ -155,7 +170,7 @@ public class Main {
 
         if (isSecondCutoff) {
             // Requirement 5: Add 1st and 2nd cutoff amounts first before computing deductions
-            double firstCutoffHours = getTotalHoursForPeriod(emp[0], month, 1, 15);
+            double firstCutoffHours = getTotalHoursForPeriod(employeeNumber, month, 1, 15);
             double monthlyGross = (firstCutoffHours + hours) * rate;
 
             double sss = computeSSS(monthlyGross);
