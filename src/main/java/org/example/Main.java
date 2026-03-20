@@ -178,7 +178,7 @@ public class Main {
 
             double sss = computeSSS(monthlyGross);
             double ph = computePhilHealth(monthlyGross);
-            double pi = 100.0;
+            double pi = computePagIBIG(monthlyGross);
             double tax = computeIncomeTax(monthlyGross - (sss + ph + pi));
             double totalDeduct = sss + ph + pi + tax;
 
@@ -301,6 +301,24 @@ public class Main {
     public static double computePhilHealth(double gross) {
         double prem = (gross <= 10000) ? 300.0 : (gross >= 60000) ? 1800.0 : gross * 0.03;
         return prem / 2;
+    }
+    // Method to Call PagIbig Deduction
+    public static double computePagIBIG(double gross) {
+
+        double contribution;
+
+        if (gross <= 1500) {
+            contribution = gross * 0.01;
+        } else {
+            contribution = gross * 0.02;
+        }
+
+        // Maximum employee contribution
+        if (contribution > 100) {
+            contribution = 100;
+        }
+
+        return contribution;
     }
 
     public static double computeIncomeTax(double taxable) {
