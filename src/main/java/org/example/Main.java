@@ -2,15 +2,22 @@ package org.example;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
 
     static String empFile = "public/employee_details.csv";
     static String attendanceFile = "public/attendance_record.csv";
+    static Map<String, List<String>> employeeData = new HashMap<>();
+    static Map<String, List<String[]>> attendanceData = new HashMap<>();
 
     static Scanner scanner = new Scanner(System.in);
     static DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("H:mm");
@@ -25,13 +32,23 @@ public class Main {
 
         // Validate credentials
         if ("employee".equals(username) && "12345".equals(password)) {
+            initData();
             handleEmployeeMenu();
         } else if ("payroll_staff".equals(username) && "12345".equals(password)) {
+            initData();
             handlePayrollStaffMenu();
         } else {
             System.out.println("Incorrect username and/or password.");
             System.exit(0);
         }
+    }
+
+    /**
+     * This method call 2 method to store csv data to hashmap
+     */
+    private static void initData() {
+        loadEmployeeData();
+        loadAttendanceData();
     }
 
     // --- 2. MENU HANDLERS ---
@@ -90,15 +107,19 @@ public class Main {
 
     // --- 3. CORE LOGIC ---
     private static void displayEmployeeBasicDetails(String empNum) {
-        String[] data = findEmployeeRecord(empNum);
-        if (data != null) {
+        String[] empData = findEmployeeRecord(empNum);
+        if (empData != null) {
+            String employeeNumber = empData[0];
+            String lastName = empData[1];
+            String firstName = empData[2];
+            String birthday = empData[3];
 
             System.out.println("========================================");
             System.out.println("         MOTORPH EMPLOYEE INFORMATION       ");
             System.out.println("========================================");
-            System.out.println("Employee Number: " + data[0]);
-            System.out.println("Employee Name: " + data[2] + " " + data[1]);
-            System.out.println("Birthday: " + data[3]);
+            System.out.println("Employee Number: " + employeeNumber);
+            System.out.println("Employee Name: " + firstName + " " + lastName);
+            System.out.println("Birthday: " + birthday);
             System.out.println("========================================");
         } else {
             System.out.println("Employee number does not exist.");
@@ -112,20 +133,30 @@ public class Main {
             return;
         }
 
+        String employeeNumber = empData[0];
+        String lastName = empData[1];
+        String firstName = empData[2];
         double hourlyRate = Double.parseDouble(empData[18]);
         String[] months = {"06", "07", "08", "09", "10", "11", "12"}; // June to December
 
         for (String month : months) {
             // Cutoff 1: 1st to 15th
-            calculateAndDisplayCutoff(empData, month, 1, 15, hourlyRate, false);
+            calculateAndDisplayCutoff(employeeNumber, firstName, lastName, month, 1, 15, hourlyRate, false);
             // Cutoff 2: 16th to end (Includes deductions)
-            calculateAndDisplayCutoff(empData, month, 16, 31, hourlyRate, true);
+            calculateAndDisplayCutoff(employeeNumber, firstName, lastName, month, 16, 31, hourlyRate, true);
         }
     }
 
     private static void calculateAndDisplayCutoff(
-            String[] emp, String month, int start, int end, double rate, boolean isSecondCutoff) {
-        double hours = getTotalHoursForPeriod(emp[0], month, start, end);
+            String employeeNumber,
+            String firstName,
+            String lastName,
+            String month,
+            int start,
+            int end,
+            double rate,
+            boolean isSecondCutoff) {
+        double hours = getTotalHoursForPeriod(employeeNumber, month, start, end);
         double gross = hours * rate;
 
         // --- OUTPUT FORMATTING ---
@@ -133,8 +164,8 @@ public class Main {
         System.out.println("         MOTORPH PAYROLL SUMMARY        ");
         System.out.println("========================================");
         // System.out.println("\n----------------------------------------");
-        System.out.println("Employee #: " + emp[0]);
-        System.out.println("Employee Name: " + emp[2] + " " + emp[1]);
+        System.out.println("Employee #: " + employeeNumber);
+        System.out.println("Employee Name: " + firstName + " " + lastName);
         System.out.println("Cutoff Date: " + getMonthName(month) + " " + start + " to " + end);
         System.out.println("Total Hours Worked: " + hours);
         System.out.println("Gross Salary: " + gross);
@@ -142,7 +173,7 @@ public class Main {
 
         if (isSecondCutoff) {
             // Requirement 5: Add 1st and 2nd cutoff amounts first before computing deductions
-            double firstCutoffHours = getTotalHoursForPeriod(emp[0], month, 1, 15);
+            double firstCutoffHours = getTotalHoursForPeriod(employeeNumber, month, 1, 15);
             double monthlyGross = (firstCutoffHours + hours) * rate;
 
             double sss = computeSSS(monthlyGross);
@@ -168,17 +199,19 @@ public class Main {
     // --- 4. CALCULATION  ---
     private static double getTotalHoursForPeriod(String empNum, String month, int start, int end) {
         double total = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(attendanceFile))) {
-            br.readLine();
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] d = line.split(",");
-                String[] dateParts = d[3].split("/"); // Expected format MM/DD/YYYY
+        List<String[]> records = attendanceData.get(empNum);
+        if (records == null) {
+            return 0;
+        }
+
+        try {
+            for (String[] record : records) {
+                String[] dateParts = record[0].split("/"); // Expected format MM/DD/YYYY
                 int dDay = Integer.parseInt(dateParts[1]);
 
-                if (d[0].equals(empNum) && dateParts[0].equals(month) && dDay >= start && dDay <= end) {
-                    LocalTime login = LocalTime.parse(d[4], timeFormat);
-                    LocalTime logout = LocalTime.parse(d[5], timeFormat);
+                if (dateParts[0].equals(month) && dDay >= start && dDay <= end) {
+                    LocalTime login = LocalTime.parse(record[1], timeFormat);
+                    LocalTime logout = LocalTime.parse(record[2], timeFormat);
                     total += computeWorkHours(login, logout);
                 }
             }
@@ -226,31 +259,16 @@ public class Main {
 
     // --- 5. DATA HELPERS ---
     private static String[] findEmployeeRecord(String empNum) {
-        try (BufferedReader br = new BufferedReader(new FileReader(empFile))) {
-            br.readLine();
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                if (data[0].trim().equals(empNum)) {
-                    return data;
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("File error: " + e.getMessage());
+        List<String> data = employeeData.get(empNum);
+        if (data == null) {
+            return null;
         }
-        return null;
+        return data.toArray(new String[0]);
     }
 
     private static void processAllEmployees() {
-        try (BufferedReader br = new BufferedReader(new FileReader(empFile))) {
-            br.readLine();
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
-                processFullPayroll(data[0].trim());
-            }
-        } catch (Exception e) {
-            System.out.println("File error: " + e.getMessage());
+        for (String empNum : employeeData.keySet()) {
+            processFullPayroll(empNum);
         }
     }
 
@@ -260,16 +278,15 @@ public class Main {
         double[] salaryLimits = {
             0, 3250, 3750, 4250, 4750, 5250, 5750, 6250, 6750, 7250, 7750, 8250, 8750, 9250, 9750, 10250, 10750, 11250,
             11750, 12250, 12750, 13250, 13750, 14250, 14750, 15250, 15750, 16250, 16750, 17250, 17750, 18250, 18750,
-            19250, 19750, 20250, 20750, 21250, 21750, 22250, 22750, 23250, 23750, 24250, 24750
+            19250, 19750, 20250, 20750, 21250, 21750, 22250, 22750, 23250, 23750, 24250, 24750,
         };
 
         // Corresponding contributions from SSS table
         double[] contributions = {
-            135.0, 157.5, 180.0, 202.5, 225.0, 247.5, 270.0, 292.5, 315.0, 337.5,
-            360.0, 382.5, 405.0, 427.5, 450.0, 472.5, 495.0, 517.5, 540.0, 562.5,
-            585.0, 607.5, 630.0, 652.5, 675.0, 697.5, 720.0, 742.5, 765.0, 787.5,
-            810.0, 832.5, 855.0, 877.5, 900.0, 922.5, 945.0, 967.5, 990.0, 1012.5,
-            1035.0, 1057.5, 1080.0, 1102.5, 1125.0
+            135.0, 157.5, 180.0, 202.5, 225.0, 247.5, 270.0, 292.5, 315.0, 337.5, 360.0, 382.5, 405.0, 427.5, 450.0,
+            472.5, 495.0, 517.5, 540.0, 562.5, 585.0, 607.5, 630.0, 652.5, 675.0, 697.5, 720.0, 742.5, 765.0, 787.5,
+            810.0, 832.5, 855.0, 877.5, 900.0, 922.5, 945.0, 967.5, 990.0, 1012.5, 1035.0, 1057.5, 1080.0, 1102.5,
+            1125.0,
         };
 
         // Iterate backwards to find which bracket the gross salary falls into
@@ -306,7 +323,77 @@ public class Main {
     }
 
     private static String getMonthName(String m) {
-        String[] n = {"", "", "", "", "", "", "June", "July", "August", "September", "October", "November", "December"};
+        String[] n = {
+            "", "", "", "", "", "", "June", "July", "August", "September", "October", "November", "December",
+        };
         return n[Integer.parseInt(m)];
+    }
+
+    /**
+     * This method help employee csv format into [{key: [employee_number, fname, lname, birthday]}]
+     * return type: array[hashmap{key: array[]}]
+     */
+    private static void loadEmployeeData() {
+        // initialize csv reader for employee
+        try (BufferedReader reader = new BufferedReader(new FileReader(empFile))) {
+            // Skip header row
+            reader.readLine();
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = splitCsvLine(line);
+
+                List<String> details = new ArrayList<>();
+                for (String part : parts) {
+                    details.add(part.trim());
+                }
+
+                employeeData.put(parts[0].trim(), details);
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to read file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * This method help attedance csv format into [{key = [date, time-in, time-out]}]
+     * return type: array[hashmap{key: array[]}]
+     */
+    private static void loadAttendanceData() {
+        // initialize csv reader for employee attedance
+        try (BufferedReader reader = new BufferedReader(new FileReader(attendanceFile))) {
+            // Skip header row
+            reader.readLine();
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = splitCsvLine(line);
+
+                String employeeNumber = parts[0].trim();
+                String timeIn = parts[4].trim();
+                String timeOut = parts[5].trim();
+                String date = parts[3].trim();
+
+                // only include attendance rows for known employee IDs
+                if (employeeData.containsKey(employeeNumber)) {
+                    attendanceData
+                            // computeIfAbsent
+                            //  - get the employee’s list if already present
+                            //  - otherwise create a new empty list for that employee
+                            .computeIfAbsent(employeeNumber, k -> new ArrayList<>())
+                            // appends the array
+                            .add(new String[] {date, timeIn, timeOut});
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to read file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * This method help remove character
+     */
+    private static String[] splitCsvLine(String line) {
+        return line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
     }
 }
