@@ -43,6 +43,9 @@ public class Main {
         }
     }
 
+    /**
+     * This method call 2 method to store csv data to hashmap
+     */
     private static void initData() {
         loadEmployeeData();
         loadAttendanceData();
@@ -326,6 +329,10 @@ public class Main {
         return n[Integer.parseInt(m)];
     }
 
+    /**
+     * This method help employee csv format into [{key: [employee_number, fname, lname, birthday]}]
+     * return type: array[hashmap{key: array[]}]
+     */
     private static void loadEmployeeData() {
         // initialize csv reader for employee
         try (BufferedReader reader = new BufferedReader(new FileReader(empFile))) {
@@ -348,6 +355,10 @@ public class Main {
         }
     }
 
+    /**
+     * This method help attedance csv format into [{key = [date, time-in, time-out]}]
+     * return type: array[hashmap{key: array[]}]
+     */
     private static void loadAttendanceData() {
         // initialize csv reader for employee attedance
         try (BufferedReader reader = new BufferedReader(new FileReader(attendanceFile))) {
@@ -379,6 +390,9 @@ public class Main {
         }
     }
 
+    /**
+     * This method help remove character
+     */
     private static String[] splitCsvLine(String line) {
         return line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
     }
