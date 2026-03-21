@@ -8,6 +8,7 @@ Team Details
 - Gross and Net Pay: Rodelconrad Aday
 - Show Employee Information: John Kenneth Racelis
 - Code Review: Felix Bonoan
+- QA Tester and Bug Fixing: Martin Jhon Neo 
 
 Program Details
 
