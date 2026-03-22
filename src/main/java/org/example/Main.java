@@ -41,6 +41,7 @@ public class Main {
             System.out.println("Incorrect username and/or password.");
             System.exit(0);
         }
+        scanner.close();
     }
 
     /**
