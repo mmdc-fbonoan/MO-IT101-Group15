@@ -41,6 +41,7 @@ public class Main {
             System.out.println("Incorrect username and/or password.");
             System.exit(0);
         }
+        scanner.close();
     }
 
     /**
@@ -51,7 +52,10 @@ public class Main {
         loadAttendanceData();
     }
 
-    // --- 2. MENU HANDLERS ---
+    /**
+     * Displays the employee menu and allows the user to view basic employee details
+     * by entering an employee number or exit the program.
+     */
     private static void handleEmployeeMenu() {
         while (true) {
             System.out.println("--- Employee Display Option ---");
@@ -70,7 +74,10 @@ public class Main {
         }
     }
 
-    // If user is Payroll_Staff proceed to display option
+    /**
+     * Displays the payroll staff menu and allows processing of payroll
+     * or exiting the program.
+     */
     private static void handlePayrollStaffMenu() {
         while (true) {
             System.out.println("--- Payroll Staff Display Option ---");
@@ -87,7 +94,10 @@ public class Main {
         }
     }
 
-    // Display Sub-Option One Employee or All Employee
+    /**
+     * Displays payroll processing options such as processing a single employee
+     * or all employees.
+     */
     private static void processPayrollMenu() {
         System.out.println("--- Process Payroll (No Allowances) ---");
         System.out.println("1. One employee");
@@ -105,7 +115,11 @@ public class Main {
         }
     }
 
-    // --- 3. CORE LOGIC ---
+    /**
+     * Displays basic employee details such as employee number, name, and birthday.
+     *
+     * @param empNum the employee number used to retrieve employee data
+     */
     private static void displayEmployeeBasicDetails(String empNum) {
         String[] empData = findEmployeeRecord(empNum);
         if (empData != null) {
@@ -125,7 +139,12 @@ public class Main {
             System.out.println("Employee number does not exist.");
         }
     }
-
+    /**
+     * Processes the full payroll for a specific employee across all months
+     * from June to December, including both cutoffs.
+     *
+     * @param empNum the employee number to process payroll for
+     */
     private static void processFullPayroll(String empNum) {
         String[] empData = findEmployeeRecord(empNum);
         if (empData == null) {
@@ -146,7 +165,19 @@ public class Main {
             calculateAndDisplayCutoff(employeeNumber, firstName, lastName, month, 16, 31, hourlyRate, true);
         }
     }
-
+    /**
+     * Calculates and displays payroll details for a given cutoff period,
+     * including gross salary and deductions if applicable.
+     *
+     * @param employeeNumber the employee number
+     * @param firstName the employee's first name
+     * @param lastName the employee's last name
+     * @param month the month in MM format
+     * @param start the starting day of the cutoff period
+     * @param end the ending day of the cutoff period
+     * @param rate the hourly rate of the employee
+     * @param isSecondCutoff indicates if deductions should be applied
+     */
     private static void calculateAndDisplayCutoff(
             String employeeNumber,
             String firstName,
@@ -196,7 +227,15 @@ public class Main {
         }
     }
 
-    // --- 4. CALCULATION  ---
+    /**
+     * Computes the total hours worked by an employee within a given date range.
+     *
+     * @param empNum the employee number
+     * @param month the month in MM format
+     * @param start the starting day of the period
+     * @param end the ending day of the period
+     * @return total hours worked within the specified period
+     */
     private static double getTotalHoursForPeriod(String empNum, String month, int start, int end) {
         double total = 0;
         List<String[]> records = attendanceData.get(empNum);
@@ -220,7 +259,15 @@ public class Main {
         }
         return total;
     }
-
+    /**
+     * Computes the number of work hours between login and logout times,
+     * applying company rules such as working hours limits, grace period,
+     * and lunch break deduction.
+     *
+     * @param login the login time
+     * @param logout the logout time
+     * @return total computed work hours
+     */
     private static double computeWorkHours(LocalTime login, LocalTime logout) {
         // Logic 4a: Only count 8:00 AM to 5:00 PM
         LocalTime startLimit = LocalTime.of(8, 0);
@@ -257,7 +304,12 @@ public class Main {
         return mins / 60.0;
     }
 
-    // --- 5. DATA HELPERS ---
+    /**
+     * Finds and retrieves the employee record using the given employee number.
+     *
+     * @param empNum the employee number used as the key
+     * @return an array containing employee details, or null if not found
+     */
     private static String[] findEmployeeRecord(String empNum) {
         List<String> data = employeeData.get(empNum);
         if (data == null) {
@@ -265,14 +317,23 @@ public class Main {
         }
         return data.toArray(new String[0]);
     }
-
+    /**
+     * Processes payroll for all employees stored in the employeeData map.
+     * Iterates through each employee and computes their full payroll.
+     */
     private static void processAllEmployees() {
         for (String empNum : employeeData.keySet()) {
             processFullPayroll(empNum);
         }
     }
 
-    // SSS deduction  based on the Salary range from SSS CSV file of Motorph Requirement
+    /**
+     * Computes the SSS contribution based on the employee's gross salary
+     * using predefined salary brackets.
+     *
+     * @param gross the employee's monthly gross salary
+     * @return the corresponding SSS contribution
+     */
     public static double computeSSS(double gross) {
         // Salary lower bounds from SSS table
         double[] salaryLimits = {
@@ -297,12 +358,24 @@ public class Main {
         }
         return 135.0; // Default minimum
     }
-
+    /**
+     * Computes the PhilHealth contribution based on the employee's gross salary,
+     * applying minimum and maximum limits.
+     *
+     * @param gross the employee's monthly gross salary
+     * @return the employee's share of PhilHealth contribution
+     */
     public static double computePhilHealth(double gross) {
         double prem = (gross <= 10000) ? 300.0 : (gross >= 60000) ? 1800.0 : gross * 0.03;
         return prem / 2;
     }
-    // Method to Call PagIbig Deduction
+    /**
+     * Computes the Pag-IBIG contribution based on the employee's gross salary,
+     * with a maximum contribution cap.
+     *
+     * @param gross the employee's monthly gross salary
+     * @return the Pag-IBIG contribution
+     */
     public static double computePagIBIG(double gross) {
 
         double contribution;
@@ -320,7 +393,13 @@ public class Main {
 
         return contribution;
     }
-
+    /**
+     * Computes the income tax based on the employee's taxable income
+     * using progressive tax brackets.
+     *
+     * @param taxable the taxable income after deductions
+     * @return the computed income tax
+     */
     public static double computeIncomeTax(double taxable) {
         if (taxable <= 20832) {
             return 0;
@@ -339,12 +418,17 @@ public class Main {
         }
         return 200833.33 + (taxable - 666667) * 0.35;
     }
-
-    private static String getMonthName(String m) {
+    /**
+     * Return the name of the month from June to December
+     *
+     * @param month in MM format
+     * @return Month Name
+     */
+    private static String getMonthName(String month) {
         String[] n = {
             "", "", "", "", "", "", "June", "July", "August", "September", "October", "November", "December",
         };
-        return n[Integer.parseInt(m)];
+        return n[Integer.parseInt(month)];
     }
 
     /**
@@ -410,6 +494,9 @@ public class Main {
 
     /**
      * This method help remove character
+     *
+     * @param line a single line from the CSV file
+     * @return an array of parsed CSV values
      */
     private static String[] splitCsvLine(String line) {
         return line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
